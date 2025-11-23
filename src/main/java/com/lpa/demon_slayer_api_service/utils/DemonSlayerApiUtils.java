@@ -6,7 +6,6 @@ import com.lpa.demon_slayer_api_service.model.dto.character.CharacterSummaryDto;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class DemonSlayerApiUtils {
@@ -26,7 +25,7 @@ public class DemonSlayerApiUtils {
 
         return list.stream()
                 .sorted(Comparator.comparing(Identifiable::id))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /** Sort a list of {@link CharacterSummaryDto} by name
@@ -40,6 +39,6 @@ public class DemonSlayerApiUtils {
 
         return characters.stream()
                 .sorted(Comparator.comparing(CharacterSummaryDto::name, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
+                .toList();
     }
 }

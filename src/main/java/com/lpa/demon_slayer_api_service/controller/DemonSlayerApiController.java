@@ -7,8 +7,8 @@ import com.lpa.demon_slayer_api_service.model.dto.character.CharacterSummaryDto;
 import com.lpa.demon_slayer_api_service.service.DemonSlayerApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api")
@@ -18,17 +18,17 @@ public class DemonSlayerApiController {
     private final DemonSlayerApiService demonSlayerApiService;
 
     @GetMapping("/characters")
-    List<CharacterSummaryDto> getAllCharacters() {
+    Flux<CharacterSummaryDto> getAllCharacters() {
         return demonSlayerApiService.getAllCharacters();
     }
 
     @GetMapping("/characters/{id}")
-    CharacterDto getCharacterById(@PathVariable Long id) throws DemonSlayerApiException {
+    Mono<CharacterDto> getCharacterById(@PathVariable Long id) {
         return demonSlayerApiService.fetchCharacter(id, null);
     }
 
     @GetMapping("/characters/search")
-    CharacterDto getCharacterByParam(
+    Mono<CharacterDto> getCharacterByParam(
             @RequestParam(required = false) Long id,
             @RequestParam(required = false) String name
     ) throws DemonSlayerApiException {
@@ -36,7 +36,7 @@ public class DemonSlayerApiController {
     }
 
     @GetMapping("/combat-styles")
-    List<CombatStyleDto> getAllCombatStyles() {
+    Flux<CombatStyleDto> getAllCombatStyles() {
         return demonSlayerApiService.getAllCombatStyles();
     }
 }

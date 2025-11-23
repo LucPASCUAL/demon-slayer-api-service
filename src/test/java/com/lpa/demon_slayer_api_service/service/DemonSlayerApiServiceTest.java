@@ -60,8 +60,11 @@ class DemonSlayerApiServiceTest {
     void getAllCharacters_returnsListOfCharacterDtoSortedById() throws IOException, InterruptedException {
         String charactersJsonMock = TestUtils.loadJson("characters-mock.json");
         enqueueMockServer(charactersJsonMock, MediaType.APPLICATION_JSON, HttpStatus.OK);
-        List<CharacterSummaryDto> charactersDto =  demonSlayerApiService.getAllCharacters();
+        List<CharacterSummaryDto> charactersDto =  demonSlayerApiService.getAllCharacters()
+                .collectList()
+                .block(); //we block the characters list, which is correct for testing purposes.
         checkRequest(HttpMethod.GET, "/characters?page=1&limit=10");
+        assertNotNull(charactersDto);
         CharacterSummaryDto firstCharacterDto = charactersDto.getFirst();
         log.info("First character is: \n{}", firstCharacterDto.toString());
         assertEquals(1, firstCharacterDto.id());
@@ -71,8 +74,9 @@ class DemonSlayerApiServiceTest {
     void getCharacterById_returnsCharacterDto() throws DemonSlayerApiException, InterruptedException, IOException {
         String characterJsonMock = TestUtils.loadJson("character-mock.json");
         enqueueMockServer(characterJsonMock, MediaType.APPLICATION_JSON, HttpStatus.OK);
-        CharacterDto characterDto = demonSlayerApiService.fetchCharacter(1L, null);
+        CharacterDto characterDto = demonSlayerApiService.fetchCharacter(1L, null).block();
         checkRequest(HttpMethod.GET, "/characters?id=1");
+        assertNotNull(characterDto);
         log.info("Character is: \n{}", characterDto.toString());
         assertEquals(1, characterDto.id());
     }
@@ -82,8 +86,9 @@ class DemonSlayerApiServiceTest {
         String characterJsonMock = TestUtils.loadJson("character-mock.json");
         String name = "Tanjiro Kamado";
         enqueueMockServer(characterJsonMock, MediaType.APPLICATION_JSON, HttpStatus.OK);
-        CharacterDto characterDto = demonSlayerApiService.fetchCharacter(null, name);
+        CharacterDto characterDto = demonSlayerApiService.fetchCharacter(null, name).block(); //we block the characters list, which is correct for testing purposes.
         checkRequest(HttpMethod.GET, "/characters?name=" + UriUtils.encodeQueryParam(name, StandardCharsets.UTF_8));
+        assertNotNull(characterDto);
         log.info("Character is: \n{}", characterDto.toString());
         assertEquals("Tanjiro Kamado", characterDto.name());
     }
@@ -92,8 +97,11 @@ class DemonSlayerApiServiceTest {
     void getAllCombatStyles_returnsListOfCombatStyleDtoSortedById() throws IOException, InterruptedException {
         String combatStylesJsonMock = TestUtils.loadJson("combat-styles-mock.json");
         enqueueMockServer(combatStylesJsonMock, MediaType.APPLICATION_JSON, HttpStatus.OK);
-        List<CombatStyleDto> combatStylesDto =  demonSlayerApiService.getAllCombatStyles();
+        List<CombatStyleDto> combatStylesDto =  demonSlayerApiService.getAllCombatStyles()
+                .collectList()
+                .block(); //we block the characters list, which is correct for testing purposes.
         checkRequest(HttpMethod.GET, "/combat-styles?page=1&limit=10");
+        assertNotNull(combatStylesDto);
         CombatStyleDto firstCombatStyle = combatStylesDto.getFirst();
         log.info("First combat style is: \n{}", firstCombatStyle.toString());
         assertEquals(1, firstCombatStyle.id());
@@ -104,7 +112,9 @@ class DemonSlayerApiServiceTest {
         String errorJsonMock = TestUtils.loadJson("character-not-found-mock.json");
         enqueueMockServer(errorJsonMock, MediaType.APPLICATION_JSON, HttpStatus.NOT_FOUND);
         Throwable thrown = assertThrows(Throwable.class,
-                () -> demonSlayerApiService.fetchCharacter(999L, null)); //because DemonSlayerApiException is encapsulated in a reactive stream, the test captures everything as a Throwable
+                () -> demonSlayerApiService.fetchCharacter(999L, null)
+                        .block() //because DemonSlayerApiException is encapsulated in a reactive stream, the test captures everything as a Throwable
+        );
         checkRequest(HttpMethod.GET, "/characters?id=" + 999L);
         assertInstanceOf(DemonSlayerApiException.class, thrown.getCause()); //check the actual cause
         DemonSlayerApiException dsEx = (DemonSlayerApiException) thrown.getCause();

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lpa.demon_slayer_api_service.exception.DemonSlayerApiException;
 import com.lpa.demon_slayer_api_service.model.dto.CombatStyleDto;
+import com.lpa.demon_slayer_api_service.model.dto.character.CharacterDto;
 import com.lpa.demon_slayer_api_service.model.dto.character.CharacterResponseDto;
 import com.lpa.demon_slayer_api_service.model.dto.pagination.PageResponseCharacterSummaryDto;
 import com.lpa.demon_slayer_api_service.model.dto.pagination.PageResponseCombatStyleDto;
@@ -12,23 +13,23 @@ import com.lpa.demon_slayer_api_service.model.dto.character.CharacterSummaryDto;
 import com.lpa.demon_slayer_api_service.utils.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(DemonSlayerApiController.class)
+@WebFluxTest(DemonSlayerApiController.class)
 class DemonSlayerApiControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private WebTestClient webTestClient;
 
     @MockitoBean
     private DemonSlayerApiService demonSlayerApiService;
@@ -41,10 +42,17 @@ class DemonSlayerApiControllerTest {
         assertNotNull(pageResponseCharacterSummary);
         List<CharacterSummaryDto> charactersDto = pageResponseCharacterSummary.content();
         when(demonSlayerApiService.getAllCharacters())
-                .thenReturn(charactersDto);
-        mockMvc.perform(get("/api/characters"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1));
+                .thenReturn(Flux.fromIterable(charactersDto));
+        webTestClient.get()
+                .uri("/api/characters")
+                .exchange() //sends the simulated HTTP request to our controller
+                .expectStatus().isOk()
+                .expectBodyList(CharacterSummaryDto.class)
+                .hasSize(charactersDto.size())
+                .consumeWith(response -> { //allows you to obtain the body of the response and make assertions on it
+                    assertNotNull(response.getResponseBody());
+                    assertEquals(1, response.getResponseBody().getFirst().id());
+                });
     }
 
     @Test
@@ -52,12 +60,18 @@ class DemonSlayerApiControllerTest {
         String characterJsonMock = TestUtils.loadJson("character-mock.json");
         ObjectMapper mapper = new ObjectMapper();
         CharacterResponseDto characterResponseDto = mapper.readValue(characterJsonMock, CharacterResponseDto.class);
-        assertNotNull(characterResponseDto);
+        CharacterDto characterDto = characterResponseDto.content().getFirst(); //we obtain the character contained in th response
         when(demonSlayerApiService.fetchCharacter(1L, null))
-                .thenReturn(characterResponseDto.content().getFirst());
-        mockMvc.perform(get("/api/characters/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1));
+                .thenReturn(Mono.just(characterDto));
+        webTestClient.get()
+                .uri("/api/characters/1")
+                .exchange() //sends the simulated HTTP request to our controller
+                .expectStatus().isOk()
+                .expectBody(CharacterDto.class)
+                .consumeWith(response -> { //allows you to obtain the body of the response and make assertions on it
+                    assertNotNull(response.getResponseBody());
+                    assertEquals(response.getResponseBody().id(), characterDto.id());
+                });
     }
 
     @Test
@@ -65,12 +79,18 @@ class DemonSlayerApiControllerTest {
         String characterJsonMock = TestUtils.loadJson("character-mock.json");
         ObjectMapper mapper = new ObjectMapper();
         CharacterResponseDto characterResponseDto = mapper.readValue(characterJsonMock, CharacterResponseDto.class);
-        assertNotNull(characterResponseDto);
+        CharacterDto characterDto = characterResponseDto.content().getFirst(); //we obtain the character contained in th response
         when(demonSlayerApiService.fetchCharacter(null, "Tanjiro Kamado"))
-                .thenReturn(characterResponseDto.content().getFirst());
-        mockMvc.perform(get("/api/characters/search?name=Tanjiro Kamado"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Tanjiro Kamado"));
+                .thenReturn(Mono.just(characterDto));
+        webTestClient.get()
+                .uri("/api/characters/search?name=Tanjiro Kamado")
+                .exchange() //sends the simulated HTTP request to our controller
+                .expectStatus().isOk()
+                .expectBody(CharacterDto.class)
+                .consumeWith(response -> { //allows you to obtain the body of the response and make assertions on it
+                    assertNotNull(response.getResponseBody());
+                    assertEquals(response.getResponseBody().name(), characterDto.name());
+                });
     }
 
     @Test
@@ -81,10 +101,17 @@ class DemonSlayerApiControllerTest {
         assertNotNull(pageResponseCombatStyleDto);
         List<CombatStyleDto> combatStylesDto = pageResponseCombatStyleDto.content();
         when(demonSlayerApiService.getAllCombatStyles())
-                .thenReturn(combatStylesDto);
-        mockMvc.perform(get("/api/combat-styles"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1));
+                .thenReturn(Flux.fromIterable(combatStylesDto));
+        webTestClient.get()
+                .uri("/api/combat-styles")
+                .exchange() //sends the simulated HTTP request to our controller
+                .expectStatus().isOk()
+                .expectBodyList(CombatStyleDto.class)
+                .hasSize(combatStylesDto.size())
+                .consumeWith(response -> { //allows you to obtain the body of the response and make assertions on it
+                    assertNotNull(response.getResponseBody());
+                    assertEquals(1, response.getResponseBody().getFirst().id());
+                });
     }
 
     @Test
@@ -100,8 +127,13 @@ class DemonSlayerApiControllerTest {
         );
         when(demonSlayerApiService.fetchCharacter(999L, null))
                 .thenThrow(dsException);
-        mockMvc.perform(get("/api/characters/999"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value(dsException.getMessage()));
+        webTestClient.get()
+                .uri("/api/characters/999")
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("$.message")
+                .isEqualTo(dsException.getMessage());
+
     }
 }

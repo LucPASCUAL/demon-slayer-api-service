@@ -1,0 +1,36 @@
+{
+  "content": [
+    {
+      "id": 1,
+      "name": "Tanjiro Kamado",
+      "age": 16,
+      "gender": "Male",
+      "race": "Human",
+      "description": "Is the main protagonist of Demon Slayer. He joined the Demon Slayer Corp to find a remedy to turn his sister, Nezuko Kamado, back into a human and to hunt down and kill demons.",
+      "img": "https://www.demonslayer-api.com/api/v1/characters/images/1.webp",
+      "quote": "Work at it. All I can do is work hard! That´s the story of my life!",
+      "first_arc_appearance": {
+        "name": "Final Selection",
+        "description": "The first Arc of the series, focusing on Tanjiro Kamado´s path after his family was slaughtered. The Arc ends after he passes the Final Selection test and receives his Nichirin blade."
+      },
+      "affiliation": {
+        "name": "Demon Slayer",
+        "description": "Demon Slayers are members of the Demon Slayer Corps whose main job is to hunt and slay demons."
+      },
+      "combat_style": [
+        {
+          "id": 1,
+          "name": "Sun Breathing",
+          "description": "Breathing Style only known and taught by the Kamado Family, later revealed to be the first Breathing Style",
+          "img": "https://www.demonslayer-api.com/api/v1/combat-styles/images/sun-breathing.webp"
+        },
+        {
+          "id": 2,
+          "name": "Water Breathing",
+          "description": "Water Breathing is one of the five main Breathing Styles directly derived from Sun Breathing.",
+          "img": "https://www.demonslayer-api.com/api/v1/combat-styles/images/water-breathing.webp"
+        }
+      ]
+    }
+  ]
+}

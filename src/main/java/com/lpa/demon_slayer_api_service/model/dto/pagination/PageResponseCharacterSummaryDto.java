@@ -1,0 +1,19 @@
+package com.lpa.demon_slayer_api_service.model.dto.pagination;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.lpa.demon_slayer_api_service.model.dto.character.CharacterSummaryDto;
+
+import java.util.List;
+
+/**
+  *
+  * @param pagination   The JSON Object key in the body of the HTTP response that contains a {@link PaginationDto}
+  * @param content      The JSON Array key in the body of the HTTP response that contains a List of {@link CharacterSummaryDto}
+  */
+@JsonIgnoreProperties(ignoreUnknown = true) //Jackson will ignore any additional fields present in the JSON
+public record PageResponseCharacterSummaryDto(
+        PaginationDto pagination,
+        List<CharacterSummaryDto> content
+) {}
+

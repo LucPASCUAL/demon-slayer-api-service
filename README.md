@@ -2,6 +2,8 @@
 
 [![Java](https://img.shields.io/badge/Java-25-blue)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.8-green)](https://spring.io/projects/spring-boot)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/LucPASCUAL/demon-slayer-api-service.git)
+
 
 A **Spring Boot 3.5.8** and **Java 25** REST API that provides information about Demon Slayer characters and combat styles. 
 The application uses **Spring WebFlux** for asynchronous, non-blocking requests to the public Demon Slayer API (https://www.demonslayer-api.com/).  
@@ -131,11 +133,60 @@ Once the application is running, you can interact with the API using `curl` or a
 ```bash
 curl http://localhost:8081/api/characters
 ```
+### response example:
+```json
+[
+  {
+    "id": 1,
+    "name": "Tanjiro Kamado",
+    "gender": "Male",
+    "race": "Human",
+    "description": "Main protagonist of Demon Slayer. He joined the Demon Slayer Corps to find a remedy to turn his sister, Nezuko, back into a human and to hunt down demons.",
+    "img": "https://www.demonslayer-api.com/api/v1/characters/images/1.webp"
+  },
+  {
+    "id": 2,
+    "name": "Nezuko Kamado",
+    "gender": "Female",
+    "race": "Demon",
+    "description": "Younger sister of Tanjiro, transformed into a demon by Muzan Kibutsuji.",
+    "img": "https://www.demonslayer-api.com/api/v1/characters/images/2.webp"
+  }
+]
 
+```
 ### Get a character by ID
 
 ```bash
 curl http://localhost:8081/api/characters/1
+```
+
+### response:
+```json
+{
+  "id": 1,
+  "name": "Tanjiro Kamado",
+  "gender": "Male",
+  "race": "Human",
+  "description": "Is the main protagonist of Demon Slayer. He joined the Demon Slayer Corp to find a remedy to turn his sister, Nezuko Kamado, back into a human and to hunt down and kill demons.",
+  "img": "https://www.demonslayer-api.com/api/v1/characters/images/1.webp",
+  "affiliation": {
+    "name": "Demon Slayer",
+    "description": "Demon Slayers are members of the Demon Slayer Corps whose main job is to hunt and slay demons."
+  },
+  "combat_style": [
+    {
+      "id": 1,
+      "name": "Sun Breathing",
+      "description": "Breathing Style only known and taught by the Kamado Family, later revealed to be the first Breathing Style"
+    },
+    {
+      "id": 2,
+      "name": "Water Breathing",
+      "description": "Water Breathing is one of the five main Breathing Styles directly derived from Sun Breathing."
+    }
+  ]
+}
 ```
 
 ### Get a character by name
@@ -144,10 +195,54 @@ curl http://localhost:8081/api/characters/1
 curl http://localhost:8081/api/characters/search?name=Tanjiro
 ```
 
+### response:  
+```json
+{
+    "id": 1,
+    "name": "Tanjiro Kamado",
+    "gender": "Male",
+    "race": "Human",
+    "description": "Is the main protagonist of Demon Slayer. He joined the Demon Slayer Corp to find a remedy to turn his sister, Nezuko Kamado, back into a human and to hunt down and kill demons.",
+    "img": "https://www.demonslayer-api.com/api/v1/characters/images/1.webp",
+    "affiliation": {
+        "name": "Demon Slayer",
+        "description": "Demon Slayers are members of the Demon Slayer Corps whose main job is to hunt and slay demons."
+    },
+    "combat_style": [
+        {
+            "id": 1,
+            "name": "Sun Breathing",
+            "description": "Breathing Style only known and taught by the Kamado Family, later revealed to be the first Breathing Style"
+        },
+        {
+            "id": 2,
+            "name": "Water Breathing",
+            "description": "Water Breathing is one of the five main Breathing Styles directly derived from Sun Breathing."
+        }
+    ]
+}
+```
+
 ### Get all combat styles
 
 ```bash
 curl http://localhost:8081/api/combat-styles
+```
+
+### response example:
+```json
+[
+    {
+        "id": 1,
+        "name": "Sun Breathing",
+        "description": "Breathing Style only known and taught by the Kamado Family, later revealed to be the first Breathing Style"
+    },
+    {
+        "id": 2,
+        "name": "Water Breathing",
+        "description": "Water Breathing is one of the five main Breathing Styles directly derived from Sun Breathing."
+    }
+]
 ```
 
 ## License

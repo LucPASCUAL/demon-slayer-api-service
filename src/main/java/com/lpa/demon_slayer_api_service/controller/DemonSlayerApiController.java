@@ -31,7 +31,7 @@ public class DemonSlayerApiController {
     Mono<CharacterDto> getCharacterByParam(
             @RequestParam(required = false) Long id,
             @RequestParam(required = false) String name
-    ) throws DemonSlayerApiException {
+    ) {
         return demonSlayerApiService.fetchCharacter(id, name);
     }
 

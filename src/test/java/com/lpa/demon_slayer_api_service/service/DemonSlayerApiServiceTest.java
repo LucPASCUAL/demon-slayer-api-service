@@ -71,7 +71,7 @@ class DemonSlayerApiServiceTest {
     }
 
     @Test
-    void getCharacterById_returnsCharacterDto() throws DemonSlayerApiException, InterruptedException, IOException {
+    void getCharacterById_returnsCharacterDto() throws InterruptedException, IOException {
         String characterJsonMock = TestUtils.loadJson("character-mock.json");
         enqueueMockServer(characterJsonMock, MediaType.APPLICATION_JSON, HttpStatus.OK);
         CharacterDto characterDto = demonSlayerApiService.fetchCharacter(1L, null).block();
@@ -82,7 +82,7 @@ class DemonSlayerApiServiceTest {
     }
 
     @Test
-    void getCharacterByName_returnsCharacterDto() throws DemonSlayerApiException, InterruptedException, IOException {
+    void getCharacterByName_returnsCharacterDto() throws InterruptedException, IOException {
         String characterJsonMock = TestUtils.loadJson("character-mock.json");
         String name = "Tanjiro Kamado";
         enqueueMockServer(characterJsonMock, MediaType.APPLICATION_JSON, HttpStatus.OK);

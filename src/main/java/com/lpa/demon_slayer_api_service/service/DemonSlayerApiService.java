@@ -33,7 +33,7 @@ import java.util.*;
  * </ul>
  *
  * @author Luc Pascual
- * @version 1.0
+ * @version 2.0
  * @see <a href="https://www.demonslayer-api.com/documentation" target="_blank"> Demon Slayer API Documentation</a>
  */
 @Service

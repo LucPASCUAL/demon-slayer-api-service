@@ -8,7 +8,7 @@
 A **Spring Boot 3.5.8** and **Java 25** REST API that provides information about Demon Slayer characters and combat styles. 
 The application uses **Spring WebFlux** for asynchronous, non-blocking requests to the public Demon Slayer API (https://www.demonslayer-api.com/).  
 This project includes unit tests for both the Controller and Service layers with **JUnit 4.13.2** and:
-* **MockMvc**: used to test REST controllers without starting the full server.
+* **WebTestClient**: used to test REST controllers without starting the full server.
 * **Mockito**: is used to mock the `DemonSlayerApiService` dependencies.
 * **MockWebServer**: used to simulate HTTP responses from the public Demon Slayer API for service tests.
 

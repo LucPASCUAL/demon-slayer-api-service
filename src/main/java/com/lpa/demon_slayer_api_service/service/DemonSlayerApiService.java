@@ -25,17 +25,17 @@ import java.time.Duration;
 import java.util.*;
 
 /**
- * The DemonSlayerApiService class contains methods for querying the public Demon Slayer API.
- * It uses Flux and Mono types from Project Reactor Java library through Spring WebFlux, Both types are reactive and allow you to manage asynchronous and non-blocking data flows:
- * <ul>
- *     <li>Mono<T> -> 0 to 1 item</li>
- *     <li>Flux<T> -> 0 to N items</li>
- * </ul>
- *
- * @author Luc Pascual
- * @version 2.0
- * @see <a href="https://www.demonslayer-api.com/documentation" target="_blank"> Demon Slayer API Documentation</a>
- */
+  * The DemonSlayerApiService class contains methods for querying the public Demon Slayer API.
+  * It uses Flux and Mono types from Project Reactor Java library through Spring WebFlux, Both types are reactive and allow you to manage asynchronous and non-blocking data flows:
+  * <ul>
+  *     <li>Mono<T> -> 0 to 1 item</li>
+  *     <li>Flux<T> -> 0 to N items</li>
+  * </ul>
+  *
+  * @author Luc Pascual
+  * @version 2.0
+  * @see <a href="https://www.demonslayer-api.com/documentation" target="_blank"> Demon Slayer API Documentation</a>
+  */
 @Service
 public class DemonSlayerApiService {
 
@@ -53,23 +53,23 @@ public class DemonSlayerApiService {
     }
 
     /**
-     * Retrieve the list of Demon Slayer characters from the Demon Slayer public API
-     * <strong>Alternative approach without ParallelFlux and synchronous:</strong>
-     * <pre>{@code
-     * public List<CharacterSummaryDto> getAllCharacters() {
-     *     return fetchPage(1)
-     *         .expand(pageResponseDto -> pageResponseDto.pagination().hasNext() ?
-     *                 fetchPage(pageResponseDto.pagination().getNextPageNumber())
-     *                     .delayElement(Duration.ofMillis(500))
-     *                 : Mono.empty()) //expand is used to generate a series of elements from an initial element, recursively, until there is nothing left to generate.
-     *         .flatMap(page -> Flux.fromIterable(page.content())) // flatten each page's content
-     *         .collectList() // aggregate all elements into a single list
-     *         .block(); // block to get the result synchronously
-     * }
-     * }</pre>
-     *
-     * @return the list of characters sorted by ID
-     */
+      * Retrieve the list of Demon Slayer characters from the Demon Slayer public API
+      * <strong>Alternative approach without ParallelFlux and synchronous:</strong>
+      * <pre>{@code
+      * public List<CharacterSummaryDto> getAllCharacters() {
+      *     return fetchPage(1)
+      *         .expand(pageResponseDto -> pageResponseDto.pagination().hasNext() ?
+      *                 fetchPage(pageResponseDto.pagination().getNextPageNumber())
+      *                     .delayElement(Duration.ofMillis(500))
+      *                 : Mono.empty()) //expand is used to generate a series of elements from an initial element, recursively, until there is nothing left to generate.
+      *         .flatMap(page -> Flux.fromIterable(page.content())) // flatten each page's content
+      *         .collectList() // aggregate all elements into a single list
+      *         .block(); // block to get the result synchronously
+      * }
+      * }</pre>
+      *
+      * @return the list of characters sorted by ID
+      */
     public Flux<CharacterSummaryDto> getAllCharacters() {
         return fetchPage(characterEndpoint, 1, PageResponseCharacterSummaryDto.class) //get the first page
                 .switchIfEmpty(
@@ -96,10 +96,10 @@ public class DemonSlayerApiService {
     }
 
     /**
-     * Retrieve the list of combat styles from the Demon Slayer public API
-     *
-     * @return the list of combat styles
-     */
+      * Retrieve the list of combat styles from the Demon Slayer public API
+      *
+      * @return the list of combat styles
+      */
     public Flux<CombatStyleDto> getAllCombatStyles() {
         return fetchPage(combatStyleEndpoint, 1, PageResponseCombatStyleDto.class)
                 .switchIfEmpty(
@@ -127,11 +127,11 @@ public class DemonSlayerApiService {
 
 
     /**
-     * Retrieve a character using their API ID or name
-     *
-     * @param id the character ID from API side
-     * @return the characterD DTO found
-     */
+      * Retrieve a character using their API ID or name
+      *
+      * @param id the character ID from API side
+      * @return the characterD DTO found
+      */
     public Mono<CharacterDto> fetchCharacter(Long id, String name) {
         if (id == null && (name == null || name.isEmpty()))
             return Mono.error(new DemonSlayerApiException(
@@ -153,16 +153,16 @@ public class DemonSlayerApiService {
     }
 
     /**
-     * @param endpoint   the Demon Slayer API endpoint
-     * @param pageNumber the page number of the characters or combat styles to retrieve from the Demon Slayer public API
-     * @param dtoClass   the DTO class
-     * @return a {@link Mono} that emits a {@link PageResponseCharacterSummaryDto} or {@link PageResponseCombatStyleDto} containing:
-     *                  <ul>
-     *                      <li>a list of {@link CharacterDto} or {@link CombatStyleDto} for the requested page</li>
-     *                      <li>a {@link PaginationDto} which contains the current page number, and the total number of pages(</li>
-     *                  </ul>
-     * The Mono completes successfully when the API responds with a valid page, or error with {@link DemonSlayerApiException} if a client or server error occurs.
-     */
+      * @param endpoint   the Demon Slayer API endpoint
+      * @param pageNumber the page number of the characters or combat styles to retrieve from the Demon Slayer public API
+      * @param dtoClass   the DTO class
+      * @return a {@link Mono} that emits a {@link PageResponseCharacterSummaryDto} or {@link PageResponseCombatStyleDto} containing:
+      *                  <ul>
+      *                      <li>a list of {@link CharacterDto} or {@link CombatStyleDto} for the requested page</li>
+      *                      <li>a {@link PaginationDto} which contains the current page number, and the total number of pages(</li>
+      *                  </ul>
+      * The Mono completes successfully when the API responds with a valid page, or error with {@link DemonSlayerApiException} if a client or server error occurs.
+      */
     private <T> Mono<T> fetchPage(String endpoint, int pageNumber, Class<T> dtoClass) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -176,13 +176,13 @@ public class DemonSlayerApiService {
     }
 
     /**
-     * Build the URI depending on the type of search (by ID or by name)
-     *
-     * @param uriBuilder the URI builder to which we will send a request
-     * @param id         the character ID from API side
-     * @param name       the character name
-     * @return the URI Object to which we will send our HTTP request
-     */
+      * Build the URI depending on the type of search (by ID or by name)
+      *
+      * @param uriBuilder the URI builder to which we will send a request
+      * @param id         the character ID from API side
+      * @param name       the character name
+      * @return the URI Object to which we will send our HTTP request
+      */
     private URI buildCharacterUri(UriBuilder uriBuilder, Long id, String name) {
         uriBuilder.path(characterEndpoint);
         if (id != null) uriBuilder.queryParam("id", id);
@@ -191,24 +191,24 @@ public class DemonSlayerApiService {
     }
 
     /**
-     * Handle the Demon Slayer public API errors
-     *
-     * <p>This method intercepts HTTP 4xx and 5xx responses and emits a {@link DemonSlayerApiException}
-     * containing the error message returned by the API.</p>
-     *
-     * <strong>Example of an error returned by the Demon Slayer API</strong>
-     * <pre>{@code
-     * {
-     *     "error": {
-     *         "status": 404,
-     *         "message": "Im sorry, I couldn't find the character ☹ Please, try again."
-     *     }
-     *  }
-     * }</pre>
-     *
-     * @param response Spring WebFlux Object representing the raw HTTP response received
-     * @return a {@link Mono} that will emit a {@link DemonSlayerApiException} if the server returned 4xx or 5xx HTTP status code
-     */
+      * Handle the Demon Slayer public API errors
+      *
+      * <p>This method intercepts HTTP 4xx and 5xx responses and emits a {@link DemonSlayerApiException}
+      * containing the error message returned by the API.</p>
+      *
+      * <strong>Example of an error returned by the Demon Slayer API</strong>
+      * <pre>{@code
+      * {
+      *     "error": {
+      *         "status": 404,
+      *         "message": "Im sorry, I couldn't find the character ☹ Please, try again."
+      *     }
+      *  }
+      * }</pre>
+      *
+      * @param response Spring WebFlux Object representing the raw HTTP response received
+      * @return a {@link Mono} that will emit a {@link DemonSlayerApiException} if the server returned 4xx or 5xx HTTP status code
+      */
     private Mono<? extends Throwable> handleApiError(ClientResponse response) {
         return response.bodyToMono(String.class).flatMap(body -> {
             ObjectMapper mapper = new ObjectMapper();
@@ -223,7 +223,8 @@ public class DemonSlayerApiService {
 
             } catch (Exception _) {
                 return Mono.error(
-                        new DemonSlayerApiException("Unknown error (invalid JSON response)", HttpStatus.valueOf(response.statusCode().value()))
+                        new DemonSlayerApiException("Unknown error (invalid JSON response)",
+                                HttpStatus.valueOf(response.statusCode().value()))
                 );
             }
         });

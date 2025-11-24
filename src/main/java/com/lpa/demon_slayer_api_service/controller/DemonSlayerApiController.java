@@ -1,6 +1,5 @@
 package com.lpa.demon_slayer_api_service.controller;
 
-import com.lpa.demon_slayer_api_service.exception.DemonSlayerApiException;
 import com.lpa.demon_slayer_api_service.model.dto.CombatStyleDto;
 import com.lpa.demon_slayer_api_service.model.dto.character.CharacterDto;
 import com.lpa.demon_slayer_api_service.model.dto.character.CharacterSummaryDto;
